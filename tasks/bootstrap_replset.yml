@@ -1,0 +1,34 @@
+---
+
+- name: Create bootstrap_replset.js file from template
+  template:
+    src: templates/bootstrap_replset.js.j2
+    dest: /opt/provisioner/bootstrap_replset.js
+    owner: mongodb
+    group: mongodb
+    mode: 0644
+  become: true
+
+  #- name: Stop MongoDB on one node
+  #  systemd:
+  #    name: mongod
+  #    state: stopped
+  #  become: true
+  #
+  #- name: Initialize MongoDB with auth disabled
+  #  shell: /usr/bin/mongod --config /etc/mongod.conf --fork --pidfilepath /var/run/mongod.pid --noauth
+  #  become: true
+  #
+- name: Apply bootstrap to mongodb
+  shell: mongo /opt/provisioner/bootstrap_replset.js
+  become: true
+  #
+  #- name: Stop MongoDB with auth disabled
+  #  shell: kill $(cat /var/run/mongod.pid)
+  #  become: true
+  #
+  #- name: Start MongoDB
+  #  systemd:
+  #    name: mongod
+  #    state: restarted
+  #  become: true

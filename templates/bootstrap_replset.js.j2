@@ -1,0 +1,46 @@
+"use admin";
+
+function makeMembers(hosts) {
+    var hosts_array = hosts.split(",");
+    var members = [];
+    var i = 0;
+    for(var j = 0; j < hosts_array.length; i++, j++) {
+        members.push({_id: i, host: hosts_array[j]});
+    }
+
+    return members;
+}
+
+function makeConf(name, hosts) {
+    return {
+        "_id": name,
+        "members": makeMembers(hosts)
+    };
+}
+
+replset_name  = "{{ mongodb_replication_replsetname }}";
+hosts         = "{{ mongodb_hosts }}";
+conf          = makeConf(replset_name, hosts);
+attempt       = 0
+
+print("Creating replicaset " + replset_name + " with hosts: " + hosts);
+
+do {
+    if(attempt > 0) {
+        print("Retrying in 15s...");
+        sleep(15000);
+    }
+
+    error = rs.initiate(conf);
+
+    if(error["ok"] === 1) {
+        printjson(error);
+        break;
+    } else {
+        print("Attempt " + attempt + "/2 failed with error: " + error["errmsg"]);
+        attempt++;
+    }
+} while(attempt < 3);
+
+printjson(rs.status());
+

@@ -1,0 +1,28 @@
+---
+
+- name: "Install dependencies"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python
+    - python-pip
+    - jq
+  become: true
+
+- name: "Pip install awscli"
+  pip:
+    name: awscli
+  become: true
+
+- name: "Get Mongodb keyFile from aws parameter store"
+  shell: /usr/local/bin/aws ssm get-parameters --names {{ aws_parameterstore_name }} --with-decryption --region {{ aws_region }} | jq -r '.Parameters[].Value' > {{ mongodb_security_keyfile }}
+  become: true
+
+- name: "Set right owner and permissions of keyFile"
+  file:
+    path: "{{ mongodb_security_keyfile }}"
+    owner: mongodb
+    group: mongodb
+    mode: 0600
+  become: true

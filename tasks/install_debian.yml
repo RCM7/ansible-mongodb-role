@@ -1,0 +1,35 @@
+---
+
+- name: Add Mongodb apt key by id from ubuntu keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 7F0CEB10
+  become: true
+
+- name: Add repository to sources.d/mongodb
+  apt_repository:
+    repo: deb http://repo.mongodb.org/apt/debian wheezy/mongodb-org/{{ mongodb_version[0:3] }} main
+    state: present
+    filename: 'mongodb'
+  become: true
+
+- name: Update repositories cache and install MongoDB packages
+  apt:
+    name: "{{item}}={{mongodb_version}}"
+    state: present
+    update_cache: yes
+  with_items:
+    - mongodb-org
+    - mongodb-org-server
+    - mongodb-org-shell
+    - mongodb-org-mongos
+    - mongodb-org-tools
+  become: true
+
+- name: Disable mongodb service
+  systemd:
+    name: mongod
+    enabled: no
+  become: true
+
+

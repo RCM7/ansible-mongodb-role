@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+
+systemLog:
+  logAppend: {{ mongodb_systemlog_logappend }}
+  logRotate: {{ mongodb_systemlog_logrotate }}
+  destination: {{ mongodb_systemlog_destination }}
+  path: {{ mongodb_systemlog_path }}
+
+storage:
+  dbPath: {{ mongodb_storage_dbpath }}
+  journal:
+    enabled: {{ mongodb_storage_journal_enabled }}
+  engine: {{ mongodb_storage_engine }}
+{% if mongodb_storage_engine == 'mmapv1' %}
+  mmapv1:
+    smallFiles: {{ mongodb_storage_mmapv1_smallfiles }}
+{% endif %}
+
+operationProfiling:
+  mode: {{ mongodb_operationprofiling_mode }}
+  slowOpThresholdMs: {{ mongodb_operationprofiling_slowopthresholdms }}
+
+processManagement:
+  fork: {{ mongodb_processmanagement_fork }}
+
+net:
+  bindIp: {{ mongodb_net_bindip }}
+  port: {{ mongodb_net_port }}
+  http:
+    enabled: {{ mongodb_net_http_enabled }}
+{% if mongodb_replication_enabled %}
+replication:
+  oplogSizeMB: {{ mongodb_replication_oplogsizemb }}
+  replSetName: {{ mongodb_replication_replsetname }}
+{% endif %}
+
+security:
+{% if mongodb_replication_enabled %}
+  clusterAuthMode: {{ mongodb_security_clusterauthmode }}
+  keyFile: {{ mongodb_security_keyfile }}
+{% endif %}
+  authorization: enabled
+  javascriptEnabled: true
+

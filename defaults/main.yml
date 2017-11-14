@@ -1,2 +1,33 @@
 ---
 # defaults file for ansible-mongodb-role
+
+mongodb_service_name: "sandbox-mongodb"
+
+mongodb_systemlog_logappend: "true"
+mongodb_systemlog_logrotate: "reopen"
+mongodb_systemlog_destination: "file"
+mongodb_systemlog_path: "/var/log/mongodb/mongod.log"
+
+mongodb_storage_dbpath: "/var/lib/mongodb"
+mongodb_storage_journal_enabled: "true"
+mongodb_storage_engine: "mmapv1"
+mongodb_storage_mmapv1_smallfiles: "false"
+
+mongodb_operationprofiling_mode: "slowOp"
+mongodb_operationprofiling_slowopthresholdms: "100"
+
+mongodb_processmanagement_fork: "false"
+
+mongodb_net_bindip: "0.0.0.0"
+mongodb_net_port: "27017"
+mongodb_net_http_enabled: "false"
+
+mongodb_replication_enabled: "true"
+mongodb_replication_oplogsizemb: "2048"
+mongodb_replication_replsetname: "replica_set"
+
+mongodb_security_clusterauthmode: "keyFile"
+mongodb_security_keyfile: "/etc/mongodb.key"
+
+aws_parameterstore_name: "mongodb-replica_set"
+aws_kms_keyid: "mongodb"

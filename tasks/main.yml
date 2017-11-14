@@ -1,2 +1,9 @@
 ---
 # tasks file for ansible-mongodb-role
+
+- name: Install Mongodb
+  include: install_debian.yml
+
+- name: Configure Mongodb
+  include: configure.yml
+
